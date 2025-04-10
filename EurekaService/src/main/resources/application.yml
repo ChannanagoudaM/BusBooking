@@ -1,0 +1,17 @@
+server:
+  port: 8761
+
+spring:
+  application: #spring.cloud.config.import-check.enabled=false.
+    name: eureka-service
+  cloud:
+    config:
+      import-check:
+        enabled: false
+
+eureka:
+  client:
+    register-with-eureka: false #prevents the server from registering itself
+    fetch-registry: false #prevents the server from fetching it's own registry
+    service-url:
+      default-zone: http://localhost:8761/eureka/
