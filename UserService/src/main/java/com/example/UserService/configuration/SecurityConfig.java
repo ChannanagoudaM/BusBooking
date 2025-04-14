@@ -1,5 +1,6 @@
 package com.example.UserService.configuration;
 
+import com.example.UserService.jwt.AuthEntryPoint;
 import com.example.UserService.jwt.JwtAuthenticationFilter;
 import com.example.UserService.jwt.JwtUtil;
 import com.example.UserService.service.UserService;
@@ -17,11 +18,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SecurityConfig {
 
+    private final AuthEntryPoint authEntryPoint;
     private final JwtUtil jwtUtil;
     private final UserService userService;
 
-    public SecurityConfig(JwtUtil jwtUtil,UserService userService)
+    public SecurityConfig(AuthEntryPoint authEntryPoint, JwtUtil jwtUtil, UserService userService)
     {
+        this.authEntryPoint = authEntryPoint;
         this.jwtUtil=jwtUtil;
         this.userService=userService;
     }
@@ -35,7 +38,8 @@ public class SecurityConfig {
                        requestMatchers("/users/login").permitAll()
                        .requestMatchers("/users/getAll").hasRole("ADMIN")
                        .anyRequest().authenticated());
-                http.addFilterBefore(new JwtAuthenticationFilter(jwtUtil,userService), UsernamePasswordAuthenticationFilter.class);
+                http.addFilterBefore(new JwtAuthenticationFilter(jwtUtil,userService), UsernamePasswordAuthenticationFilter.class)
+                        .exceptionHandling(m->m.authenticationEntryPoint(authEntryPoint));
     return http.build();
     }
 

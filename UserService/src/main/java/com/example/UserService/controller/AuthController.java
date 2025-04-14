@@ -49,7 +49,6 @@ public class AuthController {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         User user = repository.findByEmail(request.getEmail()).get();
-        System.out.println(user.getPassword());
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole());
         String refreshToken = jwtUtil.generateRefreshToken(user.getEmail());
 

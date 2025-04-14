@@ -1,6 +1,7 @@
 package com.example.UserService.jwt;
 
 import com.example.UserService.constants.UserRoles;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -62,7 +63,7 @@ public class JwtUtil {
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
-                .getSubject();
+                .get("role").toString();
     }
 
     public boolean validateToken(String token) {
@@ -74,7 +75,7 @@ public class JwtUtil {
         }
     }
 
-    public Key getSignInKey() {
+    private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         return Keys.hmacShaKeyFor(keyBytes);
     }
