@@ -1,5 +1,6 @@
 package com.example.UserService.configuration;
 
+import com.example.UserService.jwt.AccessDenied;
 import com.example.UserService.jwt.AuthEntryPoint;
 import com.example.UserService.jwt.JwtAuthenticationFilter;
 import com.example.UserService.jwt.JwtUtil;
@@ -21,12 +22,14 @@ public class SecurityConfig {
     private final AuthEntryPoint authEntryPoint;
     private final JwtUtil jwtUtil;
     private final UserService userService;
+    private final AccessDenied accessDenied;
 
-    public SecurityConfig(AuthEntryPoint authEntryPoint, JwtUtil jwtUtil, UserService userService)
+    public SecurityConfig(AuthEntryPoint authEntryPoint, JwtUtil jwtUtil, UserService userService, AccessDenied accessDenied)
     {
         this.authEntryPoint = authEntryPoint;
         this.jwtUtil=jwtUtil;
         this.userService=userService;
+        this.accessDenied = accessDenied;
     }
 
     @Bean
@@ -36,10 +39,12 @@ public class SecurityConfig {
                .authorizeHttpRequests(auth->auth.
                        requestMatchers("/users/register").permitAll().
                        requestMatchers("/users/login").permitAll()
-                       .requestMatchers("/users/getAll").hasRole("ADMIN")
+                       .requestMatchers("/users/getByEmail/**").hasAuthority("ROLE_ADMIN")
+                       .requestMatchers("/users/getAll").hasAuthority("ROLE_ADMIN")
+                       .requestMatchers("/users/getById/**").hasAuthority("ROLE_ADMIN")
                        .anyRequest().authenticated());
                 http.addFilterBefore(new JwtAuthenticationFilter(jwtUtil,userService), UsernamePasswordAuthenticationFilter.class)
-                        .exceptionHandling(m->m.authenticationEntryPoint(authEntryPoint));
+                        .exceptionHandling(m->m.authenticationEntryPoint(authEntryPoint).accessDeniedHandler(accessDenied));
     return http.build();
     }
 

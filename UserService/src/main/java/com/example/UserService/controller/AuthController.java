@@ -7,6 +7,10 @@ import com.example.UserService.entity.User;
 import com.example.UserService.jwt.JwtUtil;
 import com.example.UserService.repository.RefreshTokenRepository;
 import com.example.UserService.repository.UserRepository;
+import com.example.UserService.response.ApiResponse;
+import com.example.UserService.service.UserService;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,22 +29,29 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final UserService userService;
 
-    public AuthController(RefreshTokenRepository refreshTokenRepository,JwtUtil jwtUtil,UserRepository repository, BCryptPasswordEncoder bCryptPasswordEncoder,AuthenticationManager authenticationManager)
+    public AuthController(RefreshTokenRepository refreshTokenRepository, JwtUtil jwtUtil, UserRepository repository, BCryptPasswordEncoder bCryptPasswordEncoder, AuthenticationManager authenticationManager, UserService userService, UserService userService1)
     {
         this.repository=repository;
         this.passwordEncoder=bCryptPasswordEncoder;
         this.authenticationManager=authenticationManager;
         this.jwtUtil=jwtUtil;
         this.refreshTokenRepository=refreshTokenRepository;
+        this.userService = userService1;
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody User user)
+    public ResponseEntity<ApiResponse<?>> register(@RequestBody User user)
     {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        repository.save(user);
-        return ResponseEntity.ok("registered");
+        User save = repository.save(user);
+        ApiResponse<User>apiResponse=new ApiResponse<>(
+                "SUCCESS",
+                HttpStatus.CREATED,
+                user
+        );
+        return new ResponseEntity<>(apiResponse,HttpStatus.OK);
     }
 
 
@@ -49,6 +60,8 @@ public class AuthController {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         User user = repository.findByEmail(request.getEmail()).get();
+
+
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole());
         String refreshToken = jwtUtil.generateRefreshToken(user.getEmail());
 
@@ -61,11 +74,20 @@ public class AuthController {
     @GetMapping("/getAll")
     public ResponseEntity<List<User>> getAll()
     {
-        List<User> all = repository.findAll();
-        for(User user:all)
-        {
-            System.out.println(user.getName());
-        }
+        List<User> all = userService.getAll();
         return ResponseEntity.ok(all);
+    }
+
+    @GetMapping("/getByEmail/{email}")
+    public ResponseEntity<User> getByEmail(@PathVariable String email)
+    {
+        User byEmail = userService.findByEmail(email);
+        return ResponseEntity.ok(byEmail);
+    }
+
+    @GetMapping("/getById/{id}")
+    public ResponseEntity<User> getById(@PathVariable int id)
+    {
+        return ResponseEntity.ok(userService.getById(id));
     }
 }
