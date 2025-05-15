@@ -1,0 +1,41 @@
+<config
+        xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+        xmlns='http://www.ehcache.org/v3'
+        xmlns:jsr107='http://www.ehcache.org/v3/jsr107'
+        xsi:schemaLocation="
+        http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core-3.0.xsd
+        http://www.ehcache.org/v3/jsr107 http://www.ehcache.org/schema/ehcache-107-ext-3.0.xsd">
+
+    <!-- Cache for User entity -->
+    <cache alias="com.example.BusInventoryService.entity.Bus">
+        <expiry>
+            <ttl unit="minutes">60</ttl> <!-- Cache users for 60 minutes -->
+        </expiry>
+        <heap unit="entries">1000</heap> <!-- Max 1000 user entries -->
+        <jsr107:mbeans enable-statistics="true" enable-management="true"/>
+    </cache>
+
+    <cache alias="com.example.BusInventoryService.entity.Route">
+        <expiry>
+            <ttl unit="minutes">60</ttl> <!-- Cache users for 60 minutes -->
+        </expiry>
+        <heap unit="entries">1000</heap> <!-- Max 1000 user entries -->
+        <jsr107:mbeans enable-statistics="true" enable-management="true"/>
+    </cache>
+
+    <cache alias="com.example.BusInventoryService.entity.Schedule">
+        <expiry>
+            <ttl unit="minutes">60</ttl> <!-- Cache users for 60 minutes -->
+        </expiry>
+        <heap unit="entries">1000</heap> <!-- Max 1000 user entries -->
+        <jsr107:mbeans enable-statistics="true" enable-management="true"/>
+    </cache>
+
+    <!-- Cache for query results -->
+    <cache alias="org.hibernate.cache.internal.StandardQueryCache">
+        <expiry>
+            <ttl unit="minutes">10</ttl> <!-- Cache query results for 10 minutes -->
+        </expiry>
+        <heap unit="entries">100</heap>
+    </cache>
+</config>

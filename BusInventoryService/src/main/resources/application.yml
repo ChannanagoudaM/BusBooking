@@ -13,6 +13,18 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+    properties:
+      hibernate:
+        cache:
+          use_second_level_cache: true
+          use_query_cache: true
+          region:
+            factory_class: org.hibernate.cache.jcache.JCacheRegionFactory
+        jcache:
+          config: classpath:ehcache.xml
+          provider: org.ehcache.jsr107.EhcacheCachingProvider
+
+
 
 eureka:
   client:
@@ -20,3 +32,17 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
     register-with-eureka: true
     fetch-registry: true
+
+jwt:
+  secret: 3d22f09f9a44888b5c5dfbf338f4de69d45c6772bb6aae29566936814e7dbdc5cd33a3190a8a4c08215836d5d7aea23dc08f7619fce7b9c3b5e7dd6a168a2f7813c53eff5e2010d8807e703539ffdb0e371d3839e5f7fc91280a5092075a2c5c2d9fd8716cdea2baa8fc5870a93bd92bfbe98d92a5e46c29520db51f8a8bd82e88d9835185925605b01edc0272b495e3f48eb10b6456e900f030a32d64cccf55ba6d75c867f885ab477392d3179450ce47b4210079fd92865aea339347cc4261722702e00a9babe64ce4f8a7e7409e1839588c8f18d553f38d2183e335b704ba86038f1dd6afbf306f27fa27e1c614a9f1addefeb78b8746678d2d22806a9546
+  expiration: 3600000
+  refresh-expiration: 604800000
+
+logging:
+  level:
+    org:
+      hibernate:
+        cache: DEBUG
+
+ors:
+  api-key: 5b3ce3597851110001cf6248057b5b5a0379473a8d5fa39a8d3bdad7
