@@ -41,7 +41,8 @@ public class SecurityConfig {
                        requestMatchers("/users/login").permitAll()
                        .requestMatchers("/users/getByEmail/**").hasAuthority("ROLE_ADMIN")
                        .requestMatchers("/users/getAll").hasAuthority("ROLE_ADMIN")
-                       .requestMatchers("/users/getById/**").hasAuthority("ROLE_ADMIN")
+                       .requestMatchers(" /users/getById/**").hasAuthority("ROLE_ADMIN")
+                       .requestMatchers("/users/pagination").hasAuthority("ROLE_ADMIN")
                        .anyRequest().authenticated());
                 http.addFilterBefore(new JwtAuthenticationFilter(jwtUtil,userService), UsernamePasswordAuthenticationFilter.class)
                         .exceptionHandling(m->m.authenticationEntryPoint(authEntryPoint).accessDeniedHandler(accessDenied));

@@ -21,6 +21,7 @@ spring:
           region:
             factory_class: org.hibernate.cache.jcache.JCacheRegionFactory
         jcache:
+          config: classpath:ehcache.xml
           provider: org.ehcache.jsr107.EhcacheCachingProvider
 
 eureka:

@@ -9,11 +9,16 @@ import com.example.UserService.repository.RefreshTokenRepository;
 import com.example.UserService.repository.UserRepository;
 import com.example.UserService.response.ApiResponse;
 import com.example.UserService.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +27,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@Slf4j
 public class AuthController {
 
     private final UserRepository repository;
@@ -56,11 +62,11 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthRequest request) {
-        authenticationManager.authenticate(
+    public ResponseEntity<?> login(@RequestBody AuthRequest request) {// here authentication is happening
+        authenticationManager.authenticate(// this authentication manager uses loadByUsername()
+                //here using username and password authentication will be done
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         User user = repository.findByEmail(request.getEmail()).get();
-
 
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole());
         String refreshToken = jwtUtil.generateRefreshToken(user.getEmail());
@@ -89,5 +95,16 @@ public class AuthController {
     public ResponseEntity<User> getById(@PathVariable int id)
     {
         return ResponseEntity.ok(userService.getById(id));
+    }
+
+    @GetMapping("/pagination")
+    public ResponseEntity<Page<User>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+
+        log.info("entered controller");
+        Pageable pageable = PageRequest.of(page, size);
+        Page<User> userPage = repository.findAll(pageable);
+        return ResponseEntity.ok(userPage);
     }
 }
