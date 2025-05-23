@@ -1,6 +1,7 @@
 package com.example.BusInventoryService.service;
 
 
+import com.example.BusInventoryService.constants.BusType;
 import com.example.BusInventoryService.dto.*;
 import com.example.BusInventoryService.entity.*;
 import com.example.BusInventoryService.exception.BusNotFoundException;
@@ -66,10 +67,20 @@ public class InventoryService {
         return bus.getTotalSeats();
     }
 
+    public Bus getBus(int id)
+    {
+        return busRepository.findById(id).get();
+    }
+
     //CITY
 
     public City addCity(City city) {
         return cityRepository.save(city);
+    }
+
+    public City getCity(int id)
+    {
+        return cityRepository.findById(id).get();
     }
 
     public City fetchCity(String name) {
@@ -104,6 +115,11 @@ public class InventoryService {
         return routeRepository.save(route);
     }
 
+    public Route getRoute(int id)
+    {
+        return routeRepository.findById(id).get();
+    }
+
     //SCHEDULE
     public Schedule addSchedule(ScheduleRequestDto scheduleRequestDto) {
         Route route = routeRepository.findById(scheduleRequestDto.getRouteId()).get();
@@ -128,7 +144,7 @@ public class InventoryService {
     public SeatLockResponseDto addSeatLock(SeatLockRequestDto seatLockDto,String token) {
         Schedule schedule = scheduleRepository.findById(seatLockDto.getScheduleId()).get();
         logger.info("Schedule {}", schedule);
-        WebClient build = webClient.baseUrl("http://localhost:8090/users/").build();
+        WebClient build = webClient.baseUrl("http://localhost:8090/busBooking/users/").build();
         UserDto userDto = build.get().uri("getById/{id}", seatLockDto.getUserId())
                 .header("Authorization",token)
                 .retrieve()
@@ -149,6 +165,11 @@ public class InventoryService {
         logger.info("SeatLockResponseDto {}",map);
         seatLockRepository.save(seatLock);
         return map;
+    }
+
+    public SeatLock getSeatLock(int id)
+    {
+        return seatLockRepository.findById(id).get();
     }
 
     public DistanceResponse getDistanceBetweenCities(String origin, String destination) throws IOException, InterruptedException {

@@ -22,17 +22,17 @@ public class SecurityConfig {
         http.sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(requests->
                         requests
-                                .requestMatchers("/buses/available/**").hasAnyRole("USER", "ADMIN")
-                                .requestMatchers("/buses/addBus").hasRole("ADMIN")// Users can query availability
-                                .requestMatchers("/buses/totalSeats").hasAnyRole("ADMIN","USER")
-                                .requestMatchers("/buses/addCity").hasRole("ADMIN")
-                                .requestMatchers("/buses/addRoute").hasRole("ADMIN")
-                                .requestMatchers("/buses/addStop").hasRole("ADMIN")
-                                .requestMatchers("/buses/addSchedule").hasRole("ADMIN")
-                                .requestMatchers("/buses/getCity").hasAnyRole("ADMIN","USER")
-                                .requestMatchers("/buses/addSeatLock").hasAnyRole("ADMIN","USER")
-                                .requestMatchers("/buses/getSchedule").hasAnyRole("ADMIN","USER")
-                                .requestMatchers("/buses/**", "/schedules/**").hasRole("ADMIN")
+                                .requestMatchers("/busBooking/buses/available/**").hasAnyRole("USER", "ADMIN")
+                                .requestMatchers("/busBooking/buses/addBus").hasRole("ADMIN")// Users can query availability
+                                .requestMatchers("/busBooking/buses/totalSeats").hasAnyRole("ADMIN","USER")
+                                .requestMatchers("/busBooking/buses/addCity").hasRole("ADMIN")
+                                .requestMatchers("/busBooking/buses/addRoute").hasRole("ADMIN")
+                                .requestMatchers("/busBooking/buses/getBusById").hasAnyRole("ADMIN", "USER")
+                                .requestMatchers("/busBooking/buses/addStop").hasRole("ADMIN")
+                                .requestMatchers("/busBooking/buses/addSchedule").hasRole("ADMIN")
+                                .requestMatchers("/busBooking/buses/getCity").hasAnyRole("USER", "ADMIN")
+                                .requestMatchers("/busBooking/buses/addSeatLock").hasAnyRole("ADMIN", "USER")
+                                .requestMatchers("/busBooking/buses/getSchedule").hasAnyRole("ADMIN", "USER")
                                 .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter,UsernamePasswordAuthenticationFilter.class);
                 return http.build();

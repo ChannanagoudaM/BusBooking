@@ -6,13 +6,14 @@ import com.example.BusInventoryService.entity.*;
 import com.example.BusInventoryService.service.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/buses")
+@RequestMapping("/busBooking/buses")
 public class InventoryController {
 
     @Autowired
@@ -30,6 +31,12 @@ public class InventoryController {
     public ResponseEntity<Integer> getTotalSeats(@RequestParam String registrationNumber)
     {
         return ResponseEntity.ok(service.totalSeats(registrationNumber));
+    }
+
+    @GetMapping("/getBusById/{id}")
+    public ResponseEntity<Bus> getBus(@PathVariable int id)
+    {
+        return ResponseEntity.ok(service.getBus(id));
     }
 
     @PostMapping("/addCity")
@@ -53,6 +60,12 @@ public class InventoryController {
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
 
+    @GetMapping("/getCityById/{id}")
+    public ResponseEntity<City> getCity(@PathVariable int id)
+    {
+        return ResponseEntity.ok(service.getCity(id));
+    }
+
     @PostMapping("/addRoute")
     public ResponseEntity<ApiResponse<Route>> addRoute(@RequestBody RouteRequestDto routeRequestDto) throws IOException, InterruptedException {
         ApiResponse<Route> apiResponse=new ApiResponse<>(
@@ -61,6 +74,12 @@ public class InventoryController {
                 service.addRoute(routeRequestDto)
         );
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
+
+    @GetMapping("/getRouteById/{id}")
+    public Route getRoute(@PathVariable int id)
+    {
+        return service.getRoute(id);
     }
 
     @PostMapping("/addStop")
@@ -100,5 +119,11 @@ public class InventoryController {
                 service.addSeatLock(seatLockDto,token)
         );
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
+
+    @GetMapping("/getSeatLockById/{id}")
+    public SeatLock getSeatLock(@PathVariable int id)
+    {
+        return service.getSeatLock(id);
     }
 }
