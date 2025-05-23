@@ -37,12 +37,12 @@ public class SecurityConfig {
        http.csrf(AbstractHttpConfigurer::disable);
        http.sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                .authorizeHttpRequests(auth->auth.
-                       requestMatchers("/users/register").permitAll().
-                       requestMatchers("/users/login").permitAll()
-                       .requestMatchers("/users/getByEmail/**").hasAuthority("ROLE_ADMIN")
-                       .requestMatchers("/users/getAll").hasAuthority("ROLE_ADMIN")
-                       .requestMatchers(" /users/getById/**").hasAuthority("ROLE_ADMIN")
-                       .requestMatchers("/users/pagination").hasAuthority("ROLE_ADMIN")
+                       requestMatchers("/busBooking/users/register").permitAll().
+                       requestMatchers("/busBooking/users/login").permitAll()
+                       .requestMatchers("/busBooking/users/getByEmail/**").hasAuthority("ROLE_ADMIN")
+                       .requestMatchers("/busBooking/users/getAll").hasAuthority("ROLE_ADMIN")
+                       .requestMatchers("/busBooking /users/getById/**").hasAuthority("ROLE_ADMIN")
+                       .requestMatchers("/busBooking/users/pagination").hasAuthority("ROLE_ADMIN")
                        .anyRequest().authenticated());
                 http.addFilterBefore(new JwtAuthenticationFilter(jwtUtil,userService), UsernamePasswordAuthenticationFilter.class)
                         .exceptionHandling(m->m.authenticationEntryPoint(authEntryPoint).accessDeniedHandler(accessDenied));
@@ -54,7 +54,6 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
-
     @Bean
     public BCryptPasswordEncoder passwordEncoder()
     {

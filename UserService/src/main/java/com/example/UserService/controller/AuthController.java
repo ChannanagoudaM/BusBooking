@@ -26,7 +26,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/busBooking/users")
 @Slf4j
 public class AuthController {
 
@@ -95,16 +95,5 @@ public class AuthController {
     public ResponseEntity<User> getById(@PathVariable int id)
     {
         return ResponseEntity.ok(userService.getById(id));
-    }
-
-    @GetMapping("/pagination")
-    public ResponseEntity<Page<User>> getAll(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size) {
-
-        log.info("entered controller");
-        Pageable pageable = PageRequest.of(page, size);
-        Page<User> userPage = repository.findAll(pageable);
-        return ResponseEntity.ok(userPage);
     }
 }
